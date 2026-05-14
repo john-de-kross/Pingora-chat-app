@@ -9,7 +9,7 @@ const Login = () => {
     setShpwPass(!showPass);
   };
   return (
-    <div className="bg-gray-950 h-screen grid grid-cols-1 md:grid-cols-[70%_30%] w-full">
+    <div className="bg-gray-950 min-h-screen md:min-h-dvh grid grid-cols-1 md:grid-cols-[70%_30%] w-full">
       <div className="w-full h-full hidden md:block">
         <img
           src="./ASSETS/login-bg.png"
@@ -17,7 +17,7 @@ const Login = () => {
           className="w-full h-full object-cover"
         />
       </div>
-      <div className="w-full flex  gap-1 flex-col p-9 ">
+      <div className="w-full flex  gap-1 flex-col p-9 overflow-y-auto">
         <div className="flex flex-col md:flex-row  items-center gap-3">
           <div className="w-7 h-7 shadow-md text-lg flex justify-center items-center bg-blue-800 text-white font-bold shadow-blue-300 rounded-lg">
             <MessageCircle className="w-5 h-5 stroke-gray-900" />
