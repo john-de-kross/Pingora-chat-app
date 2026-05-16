@@ -9,7 +9,9 @@ const Login = () => {
     setShpwPass(!showPass);
   };
   return (
-    <div className="bg-gray-950 min-h-screen md:min-h-dvh grid grid-cols-1 md:grid-cols-[70%_30%] w-full">
+    <div className="bg-[#020617] min-h-dvh grid grid-cols-1 md:grid-cols-[70%_30%] w-full">
+      <div className="absolute top-10 -left-30 h-40 w-40 md:hidden rounded-full bg-blue-900/55 blur-2xl" />
+
       <div className="w-full h-full hidden md:block">
         <img
           src="./ASSETS/login-bg.png"
@@ -22,7 +24,9 @@ const Login = () => {
           <div className="w-7 h-7 shadow-md text-lg flex justify-center items-center bg-blue-800 text-white font-bold shadow-blue-300 rounded-lg">
             <MessageCircle className="w-5 h-5 stroke-gray-900" />
           </div>
-          <h2 className="text-gray-300 flex justify-center md:justify-start text-2xl font-bold">Pingora</h2>
+          <h2 className="text-gray-300 flex justify-center md:justify-start text-2xl font-bold">
+            Pingora
+          </h2>
         </div>
 
         <h1 className="text-gray-100 flex justify-center md:justify-start text-lg mt-7 font-medium py-">
@@ -56,9 +60,15 @@ const Login = () => {
             />
             <LockKeyhole className="absolute bottom-2 w-4 h-4 ml-1 text-gray-500" />
             {showPass ? (
-              <Eye onClick={handlePassword} className="absolute w-4 h-4 text-gray-500 top-10 right-4" />
+              <Eye
+                onClick={handlePassword}
+                className="absolute w-4 h-4 text-gray-500 top-10 right-4"
+              />
             ) : (
-              <EyeOff onClick={handlePassword} className="absolute w-4 h-4 text-gray-500 top-10 right-4" />
+              <EyeOff
+                onClick={handlePassword}
+                className="absolute w-4 h-4 text-gray-500 top-10 right-4"
+              />
             )}
           </div>
           <div className="flex justify-between">
@@ -66,7 +76,9 @@ const Login = () => {
               <input checked type="checkbox" name="" id="" />
               <p className="text-gray-400 text-sm font-normal">Remember me</p>
             </div>
-            <p className="text-sm cursor-pointer hover:text-gray-300 text-gray-400">Forgot password?</p>
+            <p className="text-sm cursor-pointer hover:text-gray-300 text-gray-400">
+              Forgot password?
+            </p>
           </div>
           <button className="text-gray-200 text-base h-10 transition-colors duration-300 hover:from-blue-500 hover:to-purple-500 font-medium bg-linear-to-t shadow from-blue-900 rounded to-gray-900">
             Sign in
