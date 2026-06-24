@@ -16,8 +16,8 @@ function App() {
 
   //  </div>
   // <Login />
-  // <CreatAccount />
-  <EmailVerification />
+  <CreatAccount />
+  // <EmailVerification />
   )
 }
 
