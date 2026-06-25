@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "./user";
 import { motion, AnimatePresence } from "framer-motion";
 import PasswordStrengthIndicator from "./PasswordStrength";
+import { check } from "prettier";
 
 const CreatAccount = () => {
   const [isTrue, setIsTrue] = useState(false);
@@ -45,6 +46,14 @@ const CreatAccount = () => {
     return score;
   };
 
+   const requirements = {
+      passLength: user.password.length >= 8,
+      passLowercase: checks.lowercase.test(user.password),
+      passUppercase: checks.uppercase.test(user.password),
+      passNumber: checks.number.test(user.password),
+      passSpecial: checks.special.test(user.password),
+    };
+
   const passwordLevel = getPasswordLevel();
 
   const getPasswordStrength = () => {
@@ -58,9 +67,7 @@ const CreatAccount = () => {
     setUser({
       ...user,
       [e.target.name]: e.target.value,
-    })
-    
-
+    });
   };
 
   const handlePasswordVisibility = () => {
@@ -73,12 +80,11 @@ const CreatAccount = () => {
     }, 3000);
   }
 
-  const handlePasswordStrengthSignal  = (e) => {
+  const handlePasswordStrengthSignal = (e) => {
     const updatedUser = { ...user, [e.target.name]: e.target.value };
     setUser(updatedUser);
     setIsTrue(updatedUser.password.length > 0);
-
-  }
+  };
 
   return (
     <div className="relative md:static w-full h-screen flex justify-center md:items-center py-2 md:px-0 bg-[#020617]">
@@ -209,7 +215,7 @@ const CreatAccount = () => {
                 )}
               </AnimatePresence>
             </div>
-            <PasswordStrengthIndicator isTrue={isTrue} />
+            <PasswordStrengthIndicator isTrue={isTrue} requirements={requirements} />
             <div className=" flex flex-col">
               <label
                 className="text-base md:text-sm font-medium mb-0.5 text-gray-300"
