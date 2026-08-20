@@ -13,11 +13,26 @@ import { useUser } from "./user";
 import { motion, AnimatePresence } from "framer-motion";
 import PasswordStrengthIndicator from "./PasswordStrength";
 import { check } from "prettier";
-
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "./loader";
+import AlertMessage from "./alert";
 const CreatAccount = () => {
   const [isTrue, setIsTrue] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { user, setUser } = useUser();
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termError, setTermError] = useState("");
+  const [errMessage, setErrMessage] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const checks = {
     lowercase: /[a-z]/,
     uppercase: /[A-Z]/,
@@ -33,6 +48,10 @@ const CreatAccount = () => {
   ];
 
   let score = 0;
+  const handleTermsChange = (e) => {
+    setTermsAccepted(e.target.checked);
+    setTermError("");
+  };
 
   const getPasswordLevel = () => {
     if (!user.password) return 0;
@@ -46,13 +65,13 @@ const CreatAccount = () => {
     return score;
   };
 
-   const requirements = {
-      passLength: user.password.length >= 8,
-      passLowercase: checks.lowercase.test(user.password),
-      passUppercase: checks.uppercase.test(user.password),
-      passNumber: checks.number.test(user.password),
-      passSpecial: checks.special.test(user.password),
-    };
+  const requirements = {
+    passLength: user.password.length >= 8,
+    passLowercase: checks.lowercase.test(user.password),
+    passUppercase: checks.uppercase.test(user.password),
+    passNumber: checks.number.test(user.password),
+    passSpecial: checks.special.test(user.password),
+  };
 
   const passwordLevel = getPasswordLevel();
 
@@ -68,6 +87,7 @@ const CreatAccount = () => {
       ...user,
       [e.target.name]: e.target.value,
     });
+    setErrMessage("");
   };
 
   const handlePasswordVisibility = () => {
@@ -77,7 +97,7 @@ const CreatAccount = () => {
   if (passwordLevel >= 5 && isTrue) {
     setTimeout(() => {
       setIsTrue(false);
-    }, 3000);
+    }, 2000);
   }
 
   const handlePasswordStrengthSignal = (e) => {
@@ -86,6 +106,93 @@ const CreatAccount = () => {
     setIsTrue(updatedUser.password.length > 0);
   };
 
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+    if (
+      !user.username ||
+      !user.email ||
+      !user.password ||
+      !user.confirmPassword
+    ) {
+      setErrMessage((prev) => ({
+        ...prev,
+        username: !user.username ? "Username is required" : "",
+        email: !user.email ? "Email is required" : "",
+        password: !user.password ? "Password is required" : "",
+        confirmPassword: !user.confirmPassword
+          ? "Confirm Password is required"
+          : "",
+      }));
+      return;
+    }
+
+    if (user.password !== user.confirmPassword) {
+      setErrMessage((prev) => ({
+        ...prev,
+        confirmPassword: "Passwords do not match",
+      }));
+      console.log("Passwords do not match");
+      return;
+    }
+    if (!termsAccepted) {
+      setTermError(
+        "You must agreee to the Terms of Service and Privacy Policy",
+      );
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/register",
+        {
+          username: user.username,
+          email: user.email,
+          password: user.password,
+        },
+      );
+
+      if (response.status === 201) {
+        console.log("User created successfully");
+        navigate("/email-verification");
+        const emailRes = await axios.post(
+          "http://localhost:3000/api/auth/send-otp",
+          {
+            email: user.email
+          }
+        )
+        console.log(emailRes.data);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error.response?.data);
+      const message =
+        error.response?.data?.message ||
+        "Unable to complete your request. Please try again later.";
+
+      if (message.toLowerCase().includes("username")) {
+        setErrMessage((prev) => ({
+          ...prev,
+          username: "Username is already taken",
+        }));
+      } else if (message.toLowerCase().includes("email")) {
+        setErrMessage((prev) => ({ ...prev, email: message }));
+      } else {
+        setServerError(
+          "Unable to complete your request. Please try again later.",
+        );
+      }
+    }
+  };
+  useEffect(() => {
+    if (!serverError) return;
+
+    const timer = setTimeout(() => {
+      setServerError("");
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, [serverError]);
   return (
     <div className="relative md:static w-full h-screen flex justify-center md:items-center py-2 md:px-0 bg-[#020617]">
       <div className="static md:relative w-full md:w-8/12 h-full md:h-auto shadow bg-[#020617] md:bg-slate-900/20 md:rounded-lg md:p-2 flex flex-col md:flex-row overflow-hidden">
@@ -115,6 +222,7 @@ const CreatAccount = () => {
           <p className="text-center font-medium text-gray-400 text-sm">
             Start chatting with your friends instantly
           </p>
+          <AlertMessage message={serverError} />
           <form
             className="flex space-y-1 px-7 md:px-12 p-4 md:py-0 flex-col gap-3 md:gap-2"
             action=""
@@ -135,7 +243,9 @@ const CreatAccount = () => {
                 value={user.username}
               />
               <User className="absolute h-5 w-5 md:h-4 md:w-4 mt-9 md:mt-8 ml-2 text-gray-500" />
-              <p className="errMessage text-sm font-normal md:font-medium text-red-500 px-2"></p>
+              <p className="errMessage text-sm font-normal md:font-medium text-red-500 px-2">
+                {errMessage.username}
+              </p>
             </div>
             <div className=" flex flex-col">
               <label
@@ -153,7 +263,9 @@ const CreatAccount = () => {
                 onChange={handleOnChange}
               />
               <Mail className="absolute h-5 w-5 md:h-4 md:w-4 mt-10 md:mt-7.5 ml-2 text-gray-500" />
-              <p className="errMessage text-sm font-normal md:font-medium text-red-500 px-2"></p>
+              <p className="errMessage text-sm font-normal md:font-medium text-red-500 px-2">
+                {errMessage.email}
+              </p>
             </div>
             <div className="password flex flex-col">
               <label
@@ -173,6 +285,9 @@ const CreatAccount = () => {
                 }}
                 value={user.password}
               />
+              <p className="errMessage text-sm font-normal md:font-medium text-red-500 px-2">
+                {errMessage.password}
+              </p>
               <LockKeyhole className="absolute h-5 w-5 md:h-4 md:w-4 mt-9 md:mt-8 ml-2 text-gray-500" />
               {showPassword ? (
                 <Eye
@@ -215,7 +330,10 @@ const CreatAccount = () => {
                 )}
               </AnimatePresence>
             </div>
-            <PasswordStrengthIndicator isTrue={isTrue} requirements={requirements} />
+            <PasswordStrengthIndicator
+              isTrue={isTrue}
+              requirements={requirements}
+            />
             <div className=" flex flex-col">
               <label
                 className="text-base md:text-sm font-medium mb-0.5 text-gray-300"
@@ -231,25 +349,43 @@ const CreatAccount = () => {
                 placeholder="Confirm your password"
               />
               <LockKeyhole className="absolute h-5 w-5 md:w-4 md:h-4 mt-10 md:mt-7 ml-2 text-gray-500" />
-              <p className="errMessage text-sm font-normal md:font-medium text-red-500 px-2"></p>
-            </div>
-            <div className="flex items-center gap-2 ">
-              <input type="checkbox" checked name="" />
-              <p className="text-gray-300 text-sm font-medium">
-                I agree to the{" "}
-                <a href="#" className="text-blue-500 hover:underline">
-                  Terms of Service
-                </a>{" "}
-                and{" "}
-                <a href="#" className="text-blue-500 hover:underline">
-                  Privacy Policy
-                </a>
+              <p className="errMessage text-sm font-normal md:font-medium text-red-500 px-2">
+                {errMessage.confirmPassword}
               </p>
             </div>
-            <button>
-              <p className="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300 w-full py-2 rounded-lg">
-                Create Account
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 ">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={handleTermsChange}
+                  name=""
+                />
+                <p className="text-gray-300 text-sm font-medium">
+                  I agree to the{" "}
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Privacy Policy
+                  </a>
+                </p>
+              </div>
+              <p className="text-sm font-normal md:font-medium px-2 text-red-500">
+                {termError}
               </p>
+            </div>
+            <button onClick={handleSubmitForm} className="w-full">
+              {loading ? (
+                <div className="flex justify-center items-center gap-2 w-full h-10 md:h-8 bg-blue-500 text-white rounded-lg">
+                  <LoadingSpinner />{" "}
+                </div>
+              ) : (
+                <p className="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300 w-full py-2 rounded-lg">
+                  Create Account
+                </p>
+              )}
             </button>
             <div className="flex gap-4 items-center">
               <div className="flex-1 bg-gray-600 h-px " />
@@ -278,9 +414,9 @@ const CreatAccount = () => {
             </div>
             <p className="text-center text-gray-400 font-normal text-sm">
               Already have an account?{" "}
-              <a href="#" className="text-blue-500 hover:underline">
+              <Link to="/login" className="text-blue-500 hover:underline">
                 Sign in
-              </a>
+              </Link>
             </p>
           </form>
         </div>

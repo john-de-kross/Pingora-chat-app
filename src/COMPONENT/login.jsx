@@ -1,6 +1,7 @@
 import { Eye, EyeOff, LockKeyhole, Mail, MessageCircle } from "lucide-react";
 import React from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [showPass, setShpwPass] = useState(false);
@@ -99,9 +100,9 @@ const Login = () => {
           </button>
           <p className="text-sm mx-auto text-gray-400">
             Don't have an account?{" "}
-            <span className="text-blue-500 cursor-pointer hover:underline">
+            <Link to="/signup" className="text-blue-500 cursor-pointer hover:underline">
               Sign up
-            </span>
+            </Link>
           </p>
         </form>
       </div>
