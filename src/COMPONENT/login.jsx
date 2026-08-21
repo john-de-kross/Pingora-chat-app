@@ -10,7 +10,7 @@ const Login = () => {
     setShpwPass(!showPass);
   };
   return (
-    <div className="bg-[#020617] h-screen grid grid-cols-1 md:grid-cols-[70%_30%] w-full">
+    <div className="bg-[#020617] min-h-[100dvh] grid grid-cols-1 md:h-screen md:grid-cols-[70%_30%] w-full">
       <div className="absolute top-10 -left-30 h-40 w-40 md:hidden rounded-full bg-blue-900/55 blur-2xl" />
 
       <div className="w-full h-full hidden md:block">
@@ -20,7 +20,7 @@ const Login = () => {
           className="w-full h-full object-cover"
         />
       </div>
-      <div className="w-full flex  gap-1 flex-col p-9 overflow-y-auto">
+      <div className="w-full min-h-[100dvh] flex gap-1 flex-col p-9 md:min-h-0 md:overflow-y-auto">
         <div className="flex flex-col md:flex-row  items-center gap-3">
           <div className="w-7 h-7 shadow-md text-lg flex justify-center items-center bg-blue-800 text-white font-bold shadow-blue-300 rounded-lg">
             <MessageCircle className="w-5 h-5 stroke-gray-900" />
@@ -42,7 +42,7 @@ const Login = () => {
               Email address
             </label>
             <input
-              className="outline-none text-sm px-7 text-gray-50 font-medium autofill:shadow-[inset_0_0_0px_1000px_rgb(17,24,39)] bg-gray-900 rounded h-9"
+              className="outline-none text-sm px-7 text-gray-50 placeholder:text-gray-500 font-medium autofill:shadow-[inset_0_0_0px_1000px_rgb(17,24,39)] bg-gray-900 rounded h-9"
               type="email"
               name="email"
               placeholder="you@example.com"
@@ -55,7 +55,7 @@ const Login = () => {
               Password
             </label>
             <input
-              className="relative outline-none text-sm px-7 text-gray-50 font-normal bg-gray-900 rounded h-9"
+              className="relative outline-none text-sm px-7 text-gray-50 placeholder:text-gray-500 font-normal bg-gray-900 rounded h-9"
               type={showPass ? "text" : "password"}
               placeholder="Enter your password"
             />
@@ -100,7 +100,10 @@ const Login = () => {
           </button>
           <p className="text-sm mx-auto text-gray-400">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-500 cursor-pointer hover:underline">
+            <Link
+              to="/signup"
+              className="text-blue-500 cursor-pointer hover:underline"
+            >
               Sign up
             </Link>
           </p>

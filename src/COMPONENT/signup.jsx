@@ -158,9 +158,9 @@ const CreatAccount = () => {
         const emailRes = await axios.post(
           "http://localhost:3000/api/auth/send-otp",
           {
-            email: user.email
-          }
-        )
+            email: user.email,
+          },
+        );
         console.log(emailRes.data);
       }
     } catch (error) {
@@ -194,8 +194,8 @@ const CreatAccount = () => {
     return () => clearTimeout(timer);
   }, [serverError]);
   return (
-    <div className="relative md:static w-full h-screen flex justify-center md:items-center py-2 md:px-0 bg-[#020617]">
-      <div className="static md:relative w-full md:w-8/12 h-full md:h-auto shadow bg-[#020617] md:bg-slate-900/20 md:rounded-lg md:p-2 flex flex-col md:flex-row overflow-hidden">
+    <div className="relative md:static w-full min-h-[100dvh] md:h-screen flex justify-center md:items-center py-2 md:px-0 bg-[#020617]">
+      <div className="static md:relative w-full md:w-8/12 min-h-[100dvh] md:min-h-0 md:h-auto shadow bg-[#020617] md:bg-slate-900/20 md:rounded-lg md:p-2 flex flex-col md:flex-row md:overflow-hidden">
         <div className="absolute top-10 -left-38 w-48  h-28 md:-left-10 md:w-40 md:h-48  bg-blue-700/50 blur-2xl" />
         <div className="absolute hidden md:block -bottom-12 left-4/12 w-40 h-38 bg-blue-700/50 blur-2xl" />
         <div className="w-auto mb-4 md:mb-0 md:w-5/12 flex flex-col pr-5 md:justify-center items-center py-1 gap-1 md:py-0">
@@ -236,7 +236,7 @@ const CreatAccount = () => {
               </label>
               <input
                 name="username"
-                className="relative w-full outline-none bg-gray-900 px-9 md:px-8 md:text-sm text-sm h-10 md:h-8 border text-gray-100 border-gray-900 rounded-lg"
+                className="relative w-full outline-none bg-gray-900 px-9 md:px-8 placeholder:text-gray-500 md:text-sm text-sm h-10 md:h-8 border text-gray-100 border-gray-900 rounded-lg"
                 type="text"
                 placeholder="Choose a username"
                 onChange={handleOnChange}
@@ -256,7 +256,7 @@ const CreatAccount = () => {
               </label>
               <input
                 name="email"
-                className="relative w-full outline-none bg-gray-900 px-9 pb-0.5 text-sm h-10 md:h-8 border md:px-8 text-gray-100 border-gray-900 rounded-lg"
+                className="relative w-full outline-none placeholder:text-gray-500 bg-gray-900 px-9 pb-0.5 text-sm h-10 md:h-8 border md:px-8 text-gray-100 border-gray-900 rounded-lg"
                 type="email"
                 placeholder="you@example.com"
                 value={user.email}
@@ -275,7 +275,7 @@ const CreatAccount = () => {
                 Password
               </label>
               <input
-                className="relative w-full outline-none bg-gray-900 px-9 text-sm h-10 md:h-8 border md:px-8 text-gray-100 border-gray-900 rounded-lg"
+                className="relative w-full outline-none bg-gray-900 placeholder:text-gray-500 px-9 text-sm h-10 md:h-8 border md:px-8 text-gray-100 border-gray-900 rounded-lg"
                 type={showPassword ? "text" : "password"}
                 placeholder="Choose a password"
                 name="password"
@@ -344,7 +344,7 @@ const CreatAccount = () => {
               <input
                 name="confirmPassword"
                 onChange={handleOnChange}
-                className="relative w-full outline-none bg-gray-900 px-9 md:px-8 text-sm h-10 md:h-8 border text-gray-100 border-gray-900 rounded-lg"
+                className="relative w-full outline-none placeholder:text-gray-500 bg-gray-900 px-9 md:px-8 text-sm h-10 md:h-8 border text-gray-100 border-gray-900 rounded-lg"
                 type="password"
                 placeholder="Confirm your password"
               />
