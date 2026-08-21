@@ -7,11 +7,11 @@ const AlertMessage = ({ message }) => {
   return (
     <Alert
       variant="destructive"
-      className="w-full mb-2 mt-2  rounded-xl border-red-200 bg-red-50 px-4 py-3 text-red-700 shadow-sm"
+      className="mt-3 mb-3 w-full items-center rounded-lg border border-red-400/25 border-l-2 border-l-red-400/80 bg-red-500/10 px-3 py-2.5 text-red-100 shadow-lg shadow-red-950/20 backdrop-blur-sm animate-in fade-in-0 slide-in-from-top-2"
     >
-      <AlertCircle className="h-5 w-5" />
+      <AlertCircle className="h-4 w-4 text-red-400" />
 
-      <AlertDescription className="ml-1 text-sm whitespace-nowrap font-medium leading-5">
+      <AlertDescription className="ml-0 wrap-break-word text-sm font-medium leading-5 text-red-100/90">
         {message}
       </AlertDescription>
     </Alert>

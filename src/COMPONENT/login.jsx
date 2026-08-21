@@ -10,8 +10,8 @@ const Login = () => {
     setShpwPass(!showPass);
   };
   return (
-    <div className="bg-[#020617] min-h-[100dvh] grid grid-cols-1 md:h-screen md:grid-cols-[70%_30%] w-full">
-      <div className="absolute top-10 -left-30 h-40 w-40 md:hidden rounded-full bg-blue-900/55 blur-2xl" />
+    <div className="relative isolate bg-[#020617] min-h-dvh grid grid-cols-1 md:h-screen md:grid-cols-[70%_30%] w-full">
+      <div className="pointer-events-none absolute top-4 right-4 z-0 h-24 w-24 rounded-full bg-blue-900/30 blur-2xl md:hidden" />
 
       <div className="w-full h-full hidden md:block">
         <img
@@ -20,7 +20,7 @@ const Login = () => {
           className="w-full h-full object-cover"
         />
       </div>
-      <div className="w-full min-h-[100dvh] flex gap-1 flex-col p-9 md:min-h-0 md:overflow-y-auto">
+      <div className="relative z-10 w-full min-h-dvh flex gap-1 flex-col p-9 md:min-h-0 md:overflow-y-auto">
         <div className="flex flex-col md:flex-row  items-center gap-3">
           <div className="w-7 h-7 shadow-md text-lg flex justify-center items-center bg-blue-800 text-white font-bold shadow-blue-300 rounded-lg">
             <MessageCircle className="w-5 h-5 stroke-gray-900" />
