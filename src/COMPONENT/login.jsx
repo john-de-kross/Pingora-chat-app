@@ -10,7 +10,7 @@ const Login = () => {
     setShpwPass(!showPass);
   };
   return (
-    <div className="bg-[#020617] min-h-dvh grid grid-cols-1 md:grid-cols-[70%_30%] w-full">
+    <div className="bg-[#020617] h-screen grid grid-cols-1 md:grid-cols-[70%_30%] w-full">
       <div className="absolute top-10 -left-30 h-40 w-40 md:hidden rounded-full bg-blue-900/55 blur-2xl" />
 
       <div className="w-full h-full hidden md:block">
