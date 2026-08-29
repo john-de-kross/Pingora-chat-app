@@ -2,17 +2,81 @@ import { Eye, EyeOff, LockKeyhole, Mail, MessageCircle } from "lucide-react";
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import AlertMessage from "./alert";
+import { useUser } from "./user";
+import LoadingSpinner from "./loader";
 
 const Login = () => {
   const [showPass, setShpwPass] = useState(false);
+  const navigate = useNavigate();
+  const [errMessage, setErrMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+  const {user, setUser} = useUser()
 
   const handlePassword = () => {
     setShpwPass(!showPass);
   };
+
+  const handleOnChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setLoginData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (name === "email"){
+      setUser(prev => ({
+      ...prev,
+      email: value
+    }))
+
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        {
+          email: loginData.email,
+          password: loginData.password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      if (response.status === 200) {
+        navigate("/dashboard");
+        console.log("logged in");
+      }
+    } catch (error) {
+      console.log(error.response?.data);
+      setIsLoading(false);
+      const errMsg =
+        error.response?.data?.message || "An error occurred. Try again later";
+      const status = error.response?.status;
+      if (errMsg.toLowerCase().includes("empty")) {
+        setErrMessage("Please do not leave any field empty");
+      } else if (errMsg.toLowerCase().includes("incorrect") || status === 404) {
+        setErrMessage("Incorrect email or password");
+      } else if (errMsg.toLowerCase().includes("verify")) {
+        setErrMessage("Please verify your email");
+        navigate("/email-verification");
+      } else {
+        setErrMessage("An error occured. Try again later");
+      }
+    }
+  };
   return (
     <div className="relative isolate bg-[#020617] min-h-dvh grid grid-cols-1 md:h-screen md:grid-cols-[70%_30%] w-full">
-      <div className="pointer-events-none absolute top-4 right-4 z-0 h-24 w-24 rounded-full bg-blue-900/30 blur-2xl md:hidden" />
-
       <div className="w-full h-full hidden md:block">
         <img
           src="./ASSETS/login-bg.png"
@@ -36,7 +100,10 @@ const Login = () => {
         <p className="text-xs font-medium flex justify-center md:justify-start text-gray-300">
           Sign in to continue your conversations
         </p>
+        <AlertMessage message={errMessage} />
+
         <form className="py-4 flex flex-col space-y-4" action="sumbit">
+          x
           <div className="relative flex flex-col gap-1">
             <label className="text-gray-100 text-base font-medium" htmlFor="">
               Email address
@@ -45,11 +112,12 @@ const Login = () => {
               className="outline-none text-sm px-7 text-gray-50 placeholder:text-gray-500 font-medium autofill:shadow-[inset_0_0_0px_1000px_rgb(17,24,39)] bg-gray-900 rounded h-9"
               type="email"
               name="email"
+              value={loginData.email}
+              onChange={handleOnChange}
               placeholder="you@example.com"
             />
             <Mail className="absolute ml-1 bottom-2 w-4 h-4 text-gray-500" />
           </div>
-
           <div className="relative flex flex-col gap-1">
             <label className="text-gray-100  text-base font-medium" htmlFor="">
               Password
@@ -57,6 +125,9 @@ const Login = () => {
             <input
               className="relative outline-none text-sm px-7 text-gray-50 placeholder:text-gray-500 font-normal bg-gray-900 rounded h-9"
               type={showPass ? "text" : "password"}
+              name="password"
+              value={loginData.password}
+              onChange={handleOnChange}
               placeholder="Enter your password"
             />
             <LockKeyhole className="absolute bottom-2 w-4 h-4 ml-1 text-gray-500" />
@@ -81,10 +152,18 @@ const Login = () => {
               Forgot password?
             </p>
           </div>
-          <button className="text-gray-200 text-base h-10 transition-colors duration-300 hover:from-blue-500 hover:to-purple-500 font-medium bg-linear-to-t shadow from-blue-900 rounded to-gray-900">
-            Sign in
+          <button
+            onClick={handleLogin}
+            className="text-gray-200 text-base h-10 transition-colors duration-300 hover:from-blue-500 hover:to-purple-500 font-medium bg-linear-to-t shadow from-blue-900 rounded to-gray-900"
+          >
+            {isLoading ? (
+              <div className="flex justify-center items-center">
+                <LoadingSpinner />
+              </div>
+            ) : (
+              "Sign in"
+            )}
           </button>
-
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px bg-gray-600"></div>
             <span className="text-sm text-gray-300">or continue with</span>

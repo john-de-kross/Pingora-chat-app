@@ -136,7 +136,7 @@ const CreatAccount = () => {
     }
     if (!termsAccepted) {
       setTermError(
-        "You must agreee to the Terms of Service and Privacy Policy",
+        "You must agree to the Terms of Service and Privacy Policy",
       );
       return;
     }
@@ -155,13 +155,7 @@ const CreatAccount = () => {
       if (response.status === 201) {
         console.log("User created successfully");
         navigate("/email-verification");
-        const emailRes = await axios.post(
-          "http://localhost:3000/api/auth/send-otp",
-          {
-            email: user.email,
-          },
-        );
-        console.log(emailRes.data);
+        
       }
     } catch (error) {
       setLoading(false);
@@ -196,7 +190,7 @@ const CreatAccount = () => {
   return (
     <div className="relative md:static w-full min-h-[100dvh] md:h-screen flex justify-center md:items-center py-2 md:px-0 bg-[#020617]">
       <div className="static md:relative w-full md:w-8/12 min-h-[100dvh] md:min-h-0 md:h-auto shadow bg-[#020617] md:bg-slate-900/20 md:rounded-lg md:p-2 flex flex-col md:flex-row md:overflow-hidden">
-        <div className="absolute top-10 -left-38 w-48  h-28 md:-left-10 md:w-40 md:h-48  bg-blue-700/50 blur-2xl" />
+        <div className="absolute top-10 hidden md:block -left-38 w-48  h-28 md:-left-10 md:w-40 md:h-48  bg-blue-700/50 blur-2xl" />
         <div className="absolute hidden md:block -bottom-12 left-4/12 w-40 h-38 bg-blue-700/50 blur-2xl" />
         <div className="w-auto mb-4 md:mb-0 md:w-5/12 flex flex-col pr-5 md:justify-center items-center py-1 gap-1 md:py-0">
           <div className="w-7 h-7 md:w-10 md:h-10 shadow-md text-lg flex justify-center items-center bg-blue-800 text-white font-bold shadow-blue-300 rounded-lg">

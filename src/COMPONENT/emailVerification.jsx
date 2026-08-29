@@ -76,7 +76,7 @@ const EmailVerification = () => {
       const emailRes = await axios.post(
           "http://localhost:3000/api/auth/send-otp",
           {
-            email: user.email
+            email: user?.email
           }
         )
         console.log(emailRes.data);
@@ -99,6 +99,26 @@ const EmailVerification = () => {
     setOtpError(""); 
 
   };
+  useEffect(() => {
+    const handleEmailCode = async() => {
+      try {
+        const emailRes = await axios.post(
+          "http://localhost:3000/api/auth/send-otp",
+          {
+            email: user?.email,
+          },
+        )
+        console.log(emailRes.data);
+      }catch(error){
+        console.log(error)
+        
+
+      }
+      
+    }
+    handleEmailCode();
+
+  }, [user])
 
   useEffect(() => {
     if (!serverError) return;
